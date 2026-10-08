@@ -1,0 +1,242 @@
+{
+  "name": "Tugas 2_Ai Tanpa koding",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are a# Garis Besar\nKamu asisten pelatihan NF Academy, yang siap menjawab pertanyaan dengan baik\nsesuai dengan bahasa yang digunakan penanya.\n\n# Tool\nJawablah pertanyaan tentang produk, deskripsi/uraian, biaya/harga, dan\ntempat/lokasi pelatihan sesuai dengan informasi yang tersedia dalam Tool Get\nrow(s) in sheet in Google Sheets\n\n# Batasan\nJika kamu tidak menemukan informasi produk, harga, dan tempat pelatihan, jangan\nmengarang jawaban. Berikan jawaban, \"Maaf, saya belum memiliki data yang Anda\nminta. Silakan lihat web nfacademy.id\" helpful assistant"
+        }
+      },
+      "id": "46684897-9302-458f-818c-026b7a3661d2",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        144,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "id": "644d3be1-88c7-4a9a-81fa-0100b7ed80a5",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        224
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1mZUtDYgkz_qUkiPEwdes6dO75xa4rn5dfMSjpFwW1Lk",
+          "mode": "list",
+          "cachedResultName": "n8n 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mZUtDYgkz_qUkiPEwdes6dO75xa4rn5dfMSjpFwW1Lk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mZUtDYgkz_qUkiPEwdes6dO75xa4rn5dfMSjpFwW1Lk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "71e9735a-08be-4585-a618-0cb96e508cfb",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        224
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bbTTy5n8Qv6UVCCf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "CTlTtVC02K4B4U4X",
+          "mode": "list",
+          "cachedResultName": "tugas 2 koding tanpa ai",
+          "cachedResultUrl": "/projects/UiQEXFjQrhXNNOfW/datatables/CTlTtVC02K4B4U4X"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nama",
+              "displayName": "Nama",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Harga",
+              "displayName": "Harga",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "0ce030dd-7836-41e3-88d0-16e2fcca60b4",
+      "name": "Insert row in Data table",
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "88eaf159-9af0-4fe0-b384-d94a7a7def6c",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        16
+      ],
+      "webhookId": "8f887319-c4db-41f5-9024-228d94efc2f4",
+      "credentials": {
+        "telegramApi": {
+          "id": "OFahlD8MwFrBZfOo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "b1fb9927-328b-4f6f-afb2-ed2f49ebc911",
+      "name": "Telegram Trigger",
+      "webhookId": "47b6f849-dff1-4786-bfce-7779df5177c5",
+      "credentials": {
+        "telegramApi": {
+          "id": "OFahlD8MwFrBZfOo",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row in Data table": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "31e10b1d-2045-4c6b-ac70-83ec24dec4ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "30ff6074417055a7fd35c044b8a810e66ec377fb3ea3bcb927b1912c34476d06"
+  },
+  "nodeGroups": [],
+  "id": "Fg6PAf3FM5ynfe3S",
+  "tags": []
+}
